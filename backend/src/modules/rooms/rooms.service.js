@@ -61,3 +61,42 @@ exports.getRooms = async () => {
 
   return rooms;
 };
+
+exports.updateRoomStatus =
+  async ({
+    room_id,
+    status,
+  }) => {
+    const allowedStatuses = [
+      'available',
+      'occupied',
+      'maintenance',
+    ];
+
+    if (
+      !allowedStatuses.includes(status)
+    ) {
+      throw new Error(
+        'Invalid room status'
+      );
+    }
+
+    await pool.query(
+      `UPDATE rooms
+       SET status = ?
+       WHERE id = ?`,
+      [
+        status,
+        room_id,
+      ]
+    );
+
+    const [rooms] = await pool.query(
+      `SELECT *
+       FROM rooms
+       WHERE id = ?`,
+      [room_id]
+    );
+
+    return rooms[0];
+  };

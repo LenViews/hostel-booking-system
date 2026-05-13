@@ -1,5 +1,5 @@
 const roomService =
-  require('./rooms.service');
+require('./rooms.service');
 
 exports.createRoom = async (
   req,
@@ -34,3 +34,20 @@ exports.getRooms = async (
     });
   }
 };
+
+exports.updateRoomStatus =
+  async (req, res) => {
+    try {
+      const room =
+        await roomService.updateRoomStatus({
+          room_id: req.params.id,
+          status: req.body.status,
+        });
+
+      res.status(200).json(room);
+    } catch (error) {
+      res.status(400).json({
+        error: error.message,
+      });
+    }
+  };
