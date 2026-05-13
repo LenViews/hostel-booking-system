@@ -1,5 +1,8 @@
 const jwt = require('jsonwebtoken');
 
+const ApiError =
+require('../utils/ApiError');
+
 exports.authenticate = (
   req,
   res,
@@ -9,9 +12,12 @@ exports.authenticate = (
     req.headers.authorization;
 
   if (!authHeader) {
-    return res.status(401).json({
-      error: 'Access denied',
-    });
+    return next(
+      new ApiError(
+        401,
+        'Access denied'
+      )
+    );
   }
 
   const token =
@@ -27,8 +33,11 @@ exports.authenticate = (
 
     next();
   } catch (error) {
-    return res.status(401).json({
-      error: 'Invalid token',
-    });
+    next(
+      new ApiError(
+        401,
+        'Invalid token'
+      )
+    );
   }
 };
