@@ -56,3 +56,32 @@ CREATE TABLE rooms (
     REFERENCES hostels(id)
     ON DELETE CASCADE
 );
+
+CREATE TABLE bookings (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+
+    user_id INT NOT NULL,
+
+    room_id INT NOT NULL,
+
+    check_in_date DATE NOT NULL,
+
+    check_out_date DATE NOT NULL,
+
+    status ENUM(
+        'pending',
+        'confirmed',
+        'cancelled'
+    ) DEFAULT 'confirmed',
+
+    created_at TIMESTAMP
+    DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (user_id)
+    REFERENCES users(id)
+    ON DELETE CASCADE,
+
+    FOREIGN KEY (room_id)
+    REFERENCES rooms(id)
+    ON DELETE CASCADE
+);
