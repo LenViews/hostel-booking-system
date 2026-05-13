@@ -1,5 +1,24 @@
 const express = require('express');
+const helmet = require('helmet');
+
+const morgan = require('morgan');
+
+const rateLimit =
+require('express-rate-limit');
+
+const errorMiddleware =
+require('./middlewares/error.middleware');
+
 const cors = require('cors');
+
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+
+  max: 100,
+
+  message:
+    'Too many requests, please try again later.',
+});
 
 const authRoutes =
   require('./modules/auth/auth.routes');
@@ -19,6 +38,12 @@ const app = express();
 app.use(cors());
 
 app.use(express.json());
+
+app.use(helmet());
+
+app.use(morgan('dev'));
+
+app.use(limiter);
 
 app.use('/api/auth', authRoutes);
 
@@ -47,3 +72,5 @@ app.get(
 );
 
 module.exports = app;
+
+app.use(errorMiddleware);
