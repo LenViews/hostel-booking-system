@@ -11,6 +11,9 @@ const {
 const roomRoutes =
   require('./modules/rooms/rooms.routes');
 
+const bookingRoutes =
+  require('./modules/bookings/bookings.routes');
+
 const app = express();
 
 app.use(cors());
@@ -20,6 +23,8 @@ app.use(express.json());
 app.use('/api/auth', authRoutes);
 
 app.use('/api/rooms', roomRoutes);
+
+app.use('/api/bookings', bookingRoutes);
 
 app.get('/', (req, res) => {
   res.json({
