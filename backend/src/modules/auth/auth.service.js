@@ -3,6 +3,9 @@ const jwt = require('jsonwebtoken');
 
 const pool = require('../../config/db');
 
+const ApiError =
+require('../../utils/ApiError');
+
 exports.register = async ({
   name,
   email,
@@ -15,7 +18,8 @@ exports.register = async ({
     );
 
   if (existingUsers.length > 0) {
-    throw new Error(
+    throw new ApiError(
+      400,
       'Email already exists'
     );
   }
@@ -66,7 +70,8 @@ exports.login = async ({
   const user = users[0];
 
   if (!user) {
-    throw new Error(
+    throw new ApiError(
+      401,
       'Invalid credentials'
     );
   }
@@ -78,7 +83,8 @@ exports.login = async ({
     );
 
   if (!validPassword) {
-    throw new Error(
+    throw new ApiError(
+      401,
       'Invalid credentials'
     );
   }
