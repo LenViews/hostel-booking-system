@@ -1,61 +1,116 @@
 'use client';
 
-import {
-  useEffect,
-} from 'react';
+import DashboardLayout
+from '../../components/layouts/DashboardLayout';
 
-import {
-  useRouter,
-} from 'next/navigation';
-
-import {
-  useAuth,
-} from '../../context/AuthContext';
+import { useAuth }
+from '../../context/AuthContext';
 
 export default function Dashboard() {
-  const router = useRouter();
-
-  const {
-    user,
-    loading,
-  } = useAuth();
-
-  useEffect(() => {
-    if (!loading && !user) {
-      router.push('/login');
-    }
-  }, [
-    user,
-    loading,
-    router,
-  ]);
-
-  if (loading) {
-    return <p>Loading...</p>;
-  }
+  const { user } = useAuth();
 
   return (
-    <div className="p-10">
-      <h1
-        className="
-        text-4xl
-        font-bold
-      "
-      >
-        Dashboard
-      </h1>
+    <DashboardLayout>
+      <div>
+        <h1
+          className="
+          text-4xl
+          font-bold
+          mb-4
+        "
+        >
+          Welcome Back
+        </h1>
 
-      <p className="mt-4">
-        Welcome User ID:
-        {' '}
-        {user?.id}
-      </p>
+        <p className="text-gray-600">
+          Logged in as:
+          {' '}
+          {user?.role}
+        </p>
 
-      <p>
-        Role:
-        {' '}
-        {user?.role}
-      </p>
-    </div>
+        <div
+          className="
+          grid
+          grid-cols-1
+          md:grid-cols-3
+          gap-6
+          mt-10
+        "
+        >
+          <div
+            className="
+            bg-white
+            p-6
+            rounded-2xl
+            shadow-sm
+          "
+          >
+            <h2
+              className="
+              text-gray-500
+            "
+            >
+              Total Rooms
+            </h2>
+
+            <p
+              className="
+              text-4xl
+              font-bold
+              mt-2
+            "
+            >
+              24
+            </p>
+          </div>
+
+          <div
+            className="
+            bg-white
+            p-6
+            rounded-2xl
+            shadow-sm
+          "
+          >
+            <h2 className="text-gray-500">
+              Active Bookings
+            </h2>
+
+            <p
+              className="
+              text-4xl
+              font-bold
+              mt-2
+            "
+            >
+              12
+            </p>
+          </div>
+
+          <div
+            className="
+            bg-white
+            p-6
+            rounded-2xl
+            shadow-sm
+          "
+          >
+            <h2 className="text-gray-500">
+              Available Rooms
+            </h2>
+
+            <p
+              className="
+              text-4xl
+              font-bold
+              mt-2
+            "
+            >
+              8
+            </p>
+          </div>
+        </div>
+      </div>
+    </DashboardLayout>
   );
 }
