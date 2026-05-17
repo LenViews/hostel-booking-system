@@ -6,9 +6,15 @@ exports.createRoom = async (
   res
 ) => {
   try {
+    const image_url =
+      req.file
+      ? `/uploads/${req.file.filename}`
+      : null;
+
     const room =
       await roomService.createRoom(
-        req.body
+        req.body,
+        image_url,
       );
 
     res.status(201).json(room);
