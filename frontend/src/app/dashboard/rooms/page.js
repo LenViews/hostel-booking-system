@@ -17,20 +17,71 @@ export default function RoomsPage() {
   const [selectedRoom, setSelectedRoom] =
     useState(null);
 
+  const [search, setSearch] =
+    useState('');
+
+  const [bookingData, setBookingData] =
+    useState({
+        check_in_date: '',
+        check_out_date: '',
+    });
+
+  const [loading, setLoading] =
+    useState(true);
+
   useEffect(() => {
     fetchRooms();
   }, []);
 
   const fetchRooms = async () => {
     try {
-      const response =
-        await api.get('/rooms');
+        setLoading(true);
 
-      setRooms(response.data);
+        const response = await api.get('/rooms');
+
+        setRooms(response.data);
     } catch (error) {
-      console.error(error);
-    }
+        console.error(error);
+        } finally {
+            setLoading(false);
+        }
   };
+
+  const createBooking =
+    async () => {
+        try {
+            await api.post(
+                '/bookings',
+                {
+                    room_id:
+                    selectedRoom.id,
+                    ...bookingData,
+                }
+            );
+
+            toast.success(
+                'Booking successful'
+            );
+
+            setSelectedRoom(null);
+
+            fetchRooms();
+        } catch (error) {
+            toast.error(
+                error.response?.data?.message
+            );
+        }
+  };
+
+  if (loading) {
+    return (
+        <DashboardLayout>
+        <div className="text-center py-10 text-gray-500">
+              Loading rooms...
+        </div>
+        </DashboardLayout>
+        );
+  }
 
   return (
     <DashboardLayout>
@@ -45,6 +96,22 @@ export default function RoomsPage() {
           Available Rooms
         </h1>
 
+      <input
+        type="text"
+        placeholder="Search hostel..."
+        value={search}
+        onChange={(e) =>
+            setSearch(e.target.value)
+            }
+        className="
+          w-full
+          md:w-96
+          p-3
+          border
+          rounded-xl
+          mb-8"
+      />
+
         <div
           className="
           grid
@@ -54,7 +121,15 @@ export default function RoomsPage() {
           gap-6
         "
         >
-          {rooms.map((room) => (
+          {rooms
+              .filter((room) =>
+                    room.hostel_name
+                      .toLowerCase()
+                      .includes(
+                          search.toLowerCase()
+                          )
+                  )
+              .map((room) => (
             <div
               key={room.id}
               className="
@@ -64,11 +139,13 @@ export default function RoomsPage() {
               overflow-hidden
             "
             >
-              <div
+              <img
+                src={`http://localhost:5000${room.image_url}`}
+                alt="Room"
                 className="
-                h-48
-                bg-gray-300
-              "
+                  h-48
+                  w-full
+                  object-cover"
               />
 
               <div className="p-6">
@@ -181,24 +258,36 @@ export default function RoomsPage() {
 
             <input
               type="date"
-              className="
-              w-full
-              border
-              p-3
-              rounded-lg
-              mb-4
-            "
+              value={bookingData.check_in_date}
+              onChange={(e) =>
+                  setBookingData({
+                      ...bookingData,
+                      check_in_date: e.target.value,
+                      })
+                  }
+            className="
+                w-full
+                border
+                p-3
+                rounded-lg
+                mb-4"
             />
 
             <input
               type="date"
+              value={bookingData.check_out_date}
+              onChange={(e) =>
+                  setBookingData({
+                      ...bookingData,
+                      check_out_date: e.target.value,
+                      })
+                  }
               className="
-              w-full
-              border
-              p-3
-              rounded-lg
-              mb-6
-            "
+                w-full
+                border
+                p-3
+                rounded-lg
+                mb-6"
             />
 
             <div
@@ -222,6 +311,7 @@ export default function RoomsPage() {
               </button>
 
               <button
+                onClick={createBooking}
                 className="
                 flex-1
                 bg-black
