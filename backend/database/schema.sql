@@ -43,19 +43,21 @@ CREATE TABLE rooms (
 
     price DECIMAL(10,2),
 
+    image_url TEXT,
+
     status ENUM(
         'available',
         'occupied',
         'maintenance'
     ) DEFAULT 'available',
 
-    created_at TIMESTAMP
-    DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
     FOREIGN KEY (hostel_id)
-    REFERENCES hostels(id)
-    ON DELETE CASCADE
+        REFERENCES hostels(id)
+        ON DELETE CASCADE
 );
+
 
 CREATE TABLE bookings (
     id INT AUTO_INCREMENT PRIMARY KEY,
