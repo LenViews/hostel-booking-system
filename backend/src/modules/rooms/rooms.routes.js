@@ -1,5 +1,8 @@
 const express = require('express');
 
+const upload =
+require('../../middlewares/upload.middleware');
+
 const {
   createRoom,
   getRooms,
@@ -11,6 +14,14 @@ const { authenticate } = require('../../middlewares/auth.middleware');
 const { authorize } = require('../../middlewares/role.middleware');
 
 const router = express.Router();
+
+router.post(
+  '/',
+  authenticate,
+  authorize('admin'),
+  upload.single('image'),
+  createRoom
+);
 
 router.get('/', getRooms);
 
