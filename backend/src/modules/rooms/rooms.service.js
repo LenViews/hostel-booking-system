@@ -5,6 +5,7 @@ exports.createRoom = async ({
   room_number,
   capacity,
   price,
+  image_url,
 }) => {
   if (
     !hostel_id ||
@@ -22,14 +23,16 @@ exports.createRoom = async ({
       hostel_id,
       room_number,
       capacity,
-      price
+      price,
+      image_url
     )
-    VALUES (?, ?, ?, ?)`,
+    VALUES (?, ?, ?, ?, ?)`,
     [
       hostel_id,
       room_number,
       capacity,
       price,
+      image_url
     ]
   );
 
