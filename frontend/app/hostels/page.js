@@ -9,9 +9,24 @@ export default function HostelsPage() {
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    loadHostels();
-  }, [search]);
+useEffect(() => {
+  const loadHostels = async () => {
+    try {
+      const res = await hostelAPI.getAll();
+      console.log("API RESPONSE:", res);
+
+      const data = res.data?.data || res.data || [];
+      setHostels(Array.isArray(data) ? data : []);
+    } catch (error) {
+      console.error("Error loading hostels:", error);
+      setHostels([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  loadHostels();
+}, []);
 
   const loadHostels = async () => {
     setLoading(true);

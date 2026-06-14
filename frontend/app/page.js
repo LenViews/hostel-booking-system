@@ -6,9 +6,15 @@ import { hostelAPI } from '@/lib/api';
 export default function LandingPage() {
   const [featuredHostels, setFeaturedHostels] = useState([]);
 
-  useEffect(() => {
-    hostelAPI.getAll().then(res => setFeaturedHostels(res.data.slice(0, 3)));
-  }, []);
+useEffect(() => {
+  hostelAPI.getAll().then(res => {
+    console.log("API RESPONSE:", res);
+    setFeaturedHostels([]);
+  });
+}, []);
+
+console.log("featuredHostels:", featuredHostels);
+console.log("type:", typeof featuredHostels);
 
   return (
     <div>
