@@ -31,10 +31,25 @@ const createBooking = async (req, res) => {
             return res.status(400).json({ message: 'End date must be after start date' });
         }
         
-        // Check room exists and is available
-        const [rooms] = await db.query('SELECT * FROM rooms WHERE id = ? AND is_available = 1', [room_id]);
-        if (rooms.length === 0) {
-            return res.status(400).json({ message: 'Room is not available' });
+        // 1. Check if the room exists, is marked available, AND has NO overlapping active bookings
+        const [availability] = await db.query(
+            `SELECT r.id 
+            FROM rooms r
+            WHERE r.id = ? AND r.is_available = 1
+            AND NOT EXISTS (
+                SELECT 1 FROM bookings b
+                WHERE b.room_id = r.id
+                AND b.status != 'cancelled'
+                AND b.start_date < ? 
+                AND b.end_date > ?
+            )`,
+            [room_id, end_date, start_date] // Overlap condition: existing start < new end AND existing end > new start
+        );
+
+        if (availability.length === 0) {
+            return res.status(400).json({ 
+                message: 'Room is either marked unavailable or already booked for the selected dates' 
+            });
         }
         
         // Check for double booking
