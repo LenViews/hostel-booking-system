@@ -53,8 +53,7 @@ CREATE TABLE bookings (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (student_id) REFERENCES users(id) ON DELETE CASCADE,
     FOREIGN KEY (room_id) REFERENCES rooms(id) ON DELETE CASCADE,
-    CHECK (start_date <= end_date),
-    CHECK (start_date >= CURDATE())
+    CHECK (start_date <= end_date)
 );
 
 -- Indexes for performance
